@@ -1,5 +1,5 @@
 export default function DeleteButton() {
   return(
-    <button className="basicBtn deleteBtn">x</button>
+    <button className="basicBtn deleteBtn"> x </button>
   )
 }

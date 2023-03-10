@@ -1,47 +1,52 @@
-import React, { useState } from 'react'
+import React, {  useState, useEffect } from 'react'
 
-export default function Timer() {
-  const [time, setTime] = useState(0)
+
+export default function Timer({initialTime=0, changeAction, countingInterval=1000}) {
+  
+  
+  const [time, setTime] = useState(initialTime)
   const [timerOn, setTimerOn] = useState(false)
 
-  React.useEffect(() => {
+
+  useEffect(() => {
     let interval = null;
 
     if(timerOn) {
       interval = setInterval(() => {
-        setTime(prevTime => prevTime + 10)
-      }, 10)
+        setTime(prevTime => prevTime + countingInterval)
+        console.log(time)
+        changeAction(time)
+      }, countingInterval)
     }else{
       clearInterval(interval)
     }
 
     return () => clearInterval(interval)
 
-  }, [timerOn])
+  }, [timerOn, changeAction, time, setTime, countingInterval])
+
+  
 
   return (
     <>
-      <div className="timer">
-        <div>
-          <span>{("0" + Math.floor((time / 3600000) % 60)).slice(-2)}</span>:
-          <span>{("0" + Math.floor((time / 60000) % 60)).slice(-2)}</span>:
-          <span>{("0" + Math.floor((time / 1000) % 60)).slice(-2)}</span>
-          
-        </div>
+      <div className="timerDisplay">
+          <span className="hoursDisplay">{("0" + Math.floor((time / 3600000) % 60)).slice(-2)}</span>:
+          <span className="minutesDisplay">{("0" + Math.floor((time / 60000) % 60)).slice(-2)}</span>:
+          <span className="secondsDisplay">{("0" + Math.floor((time / 1000) % 60)).slice(-2)}</span>
       </div>
       <div className="allBtns">
         <div className="controlBtns">
-          {!timerOn && time == 0 && (
+          {!timerOn && time === 0 && (
             <button
               className="startBtn basicBtn"
               onClick={() => setTimerOn(true)}>Start
-          </button>
+            </button>
           )}
           {!timerOn && time !== 0 && (
             <button
               className="resumeBtn basicBtn"
               onClick={() => setTimerOn(true)}>Resume
-          </button>
+            </button>
           )}
           {timerOn && (
             <button
@@ -49,16 +54,18 @@ export default function Timer() {
               onClick={() => setTimerOn(false)}>Stop
             </button>
           )}
-          
           <button 
             className="resetBtn basicBtn"
-            onClick={() => setTime(0)}
+            onClick={() => {
+              setTime(0)
+              
+            }}
             >Reset</button>
         </div>
-        <div>
-          <button className="fullWidthBtn basicBtn">Capture</button>
-        </div>
+        
       </div>
     </>
   )
+  
 }
+
